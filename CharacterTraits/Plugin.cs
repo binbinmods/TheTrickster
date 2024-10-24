@@ -19,8 +19,8 @@ namespace TheMagician
         private readonly Harmony harmony = new(PluginInfo.PLUGIN_GUID);
         internal static ManualLogSource Log;
 
-        public static string characterName = "<HeroName>";
-        public static string subclassName = "<Subclass>"; // needs caps
+        public static string characterName = "<HeroName>"; // caps
+        public static string subclassName = "Magician"; // needs caps
 
         private void Awake()
         {
@@ -30,11 +30,11 @@ namespace TheMagician
             RegisterMod(
                 _name: PluginInfo.PLUGIN_NAME,
                 _author: "binbin",
-                _description: "<Hero, The Subclass>.",
+                _description: characterName + ", The " + subclassName,
                 _version: PluginInfo.PLUGIN_VERSION,
                 _date: ModDate,
                 _link: @"https://github.com/binbinmods/magician",
-                _contentFolder: "<Hero>",
+                _contentFolder: characterName,
                 _type: ["content", "hero", "trait"]
             );
             // apply patches

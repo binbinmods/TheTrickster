@@ -6,12 +6,40 @@ using Obeliskial_Content;
 using Obeliskial_Essentials;
 using System.IO;
 using static UnityEngine.Mathf;
+using System.Xml;
 
 namespace TheMagician
 {
     public class TraitFunctions
     {
+        /*
+        Added the following functions:
 
+        Helper Functions
+            CanIncrementActivations
+            IncrementActivations
+            TextChargesLeft
+            DisplayRemainingCharges
+            PlaySoundEffect
+            GetValidCharacters
+            GetFrontCharacter
+            GetBackCharacter
+            GetRandomCharacter
+            CountAllStacks
+
+        Trait Specific things:
+            CastTargetCard - casts a card
+            TraitHeal - heals a character 
+            TraitHealHero - heals a hero 
+            WhenYouPlayXRefund1Energy
+            WhenYouGainXGainY
+            WhenYouPlayXGainY
+            PermanentyReduceXWhenYouPlayY
+            ApplyAuraCurseInAoE - Works for AoE applications
+            ReduceCostByStacks
+            IncreaseChargesByStacks
+            Duality - A fully implemented duality trait
+        */
         public static void TraitHeal(ref Character _character, ref Character _target, int healAmount, string traitName)
         {
             int _hp = healAmount;
@@ -71,7 +99,7 @@ namespace TheMagician
             // too lazy to write this since they all come with secondary effects
         }
 
-        public static void ApplyAuraCurseTo(string auraCurse, int amount, bool allHeroFlag, bool allNpcFlag, bool randomHeroFlag, bool randomNpcFlag, ref Character _character, ref Hero[] teamHeroes, ref NPC[] teamNpc, string traitName, string soundEffect)
+        public static void ApplyAuraCurseInAoE(string auraCurse, int amount, bool allHeroFlag, bool allNpcFlag, bool randomHeroFlag, bool randomNpcFlag, ref Character _character, ref Hero[] teamHeroes, ref NPC[] teamNpc, string traitName, string soundEffect)
         {
             if (allNpcFlag)
             {
@@ -139,6 +167,29 @@ namespace TheMagician
                     _character.HeroItem.ScrollCombatText(Texts.Instance.GetText("traits_" + traitName), Enums.CombatScrollEffectType.Trait);
                 }
             }
+        }
+
+        public static void IncrementActivations(string traitName)
+        {
+
+            if (!MatchManager.Instance.activatedTraits.ContainsKey(traitName))
+            {
+                MatchManager.Instance.activatedTraits.Add(traitName, 1);
+            }
+            else
+            {
+                Dictionary<string, int> activatedTraits = MatchManager.Instance.activatedTraits;
+                activatedTraits[traitName] = activatedTraits[traitName] + 1;
+            }
+            MatchManager.Instance.SetTraitInfoText();
+        }
+
+        public static bool CanIncrementActivations(string traitName, TraitData traitData){
+            if (!((UnityEngine.Object)MatchManager.Instance != (UnityEngine.Object)null))
+                return false;
+            if (MatchManager.Instance.activatedTraits != null && MatchManager.Instance.activatedTraits.ContainsKey(traitName) && MatchManager.Instance.activatedTraits[traitName] > traitData.TimesPerTurn - 1)
+                return false;
+            return true;
         }
 
         public static void ReduceCostByStacks(Enums.CardType cardType, string auraCurseName, int n_charges, ref Character _character, ref List<string> heroHand, ref List<CardData> cardDataList, string traitName, bool applyToAllCards)
@@ -247,6 +298,53 @@ namespace TheMagician
             }
         }
 
+        public static void DisplayRemainingCharges(ref Character _character,string traitName, TraitData traitData, string ACeffect){
+            if (_character.HeroItem != null)
+                {
+                    _character.HeroItem.ScrollCombatText(Texts.Instance.GetText("traits_"+traitName, "") + TextChargesLeft(MatchManager.Instance.activatedTraits[traitName], traitData.TimesPerTurn), Enums.CombatScrollEffectType.Trait);
+                    EffectsManager.Instance.PlayEffectAC(ACeffect, true, _character.HeroItem.CharImageT, false, 0f);
+                }
+        }
+        
+        public static void PlaySoundEffect(Character _character, string ACeffect){
+            if (_character.HeroItem != null)
+                {
+                    EffectsManager.Instance.PlayEffectAC(ACeffect, true, _character.HeroItem.CharImageT, false, 0f);
+                }
+        }
+
+        public static List<int> GetValidCharacters(Character[] characters){
+            List<int> output_list = [];
+            for (int index = 0; index < characters.Length; ++index){
+                Character character = characters[index];
+                if (character.Alive && character!=null){
+                    output_list.Add(index);
+                }
+            }
+            return output_list;
+        }
+
+        public static Character GetFrontCharacter(Character[] characters){
+            List<int> validCharacters = GetValidCharacters(characters);
+            int frontIndex = validCharacters.First(); //Might throw error if no valid characters, but that shouldn't be possible
+            Character frontChar = characters[frontIndex];
+            return frontChar;
+        }
+
+        public static Character GetBackCharacter(Character[] characters){
+            List<int> validCharacters = GetValidCharacters(characters);
+            int backIndex = validCharacters.Last(); //Might throw error if no valid characters, but that shouldn't be possible
+            Character backChar = characters[backIndex];
+            return backChar;
+        }
+
+        public static Character GetRandomCharacter(Character[] characters){
+            List<int> validIndices = GetValidCharacters(characters);
+            int randomIndex = validIndices[MatchManager.Instance.GetRandomIntRange(0, validIndices.Count, "trait")]; //Might throw error if no valid characters, but that shouldn't be possible
+            Character randomChar = characters[randomIndex];
+            return randomChar;
+        }
+
         public static void PermanentyReduceXWhenYouPlayY(ref Character _character, ref CardData _castedCard, Enums.CardType reduceThis, Enums.CardType whenYouPlayThis, int amountToReduce, string traitName)
         {
             if (!((Object)MatchManager.Instance != (Object)null) || !((Object)_castedCard != (Object)null))
@@ -320,6 +418,10 @@ namespace TheMagician
             MatchManager.Instance.StartCoroutine(MatchManager.Instance.CastCard(_automatic: true, _card: card, _energy: 0));
 
             //MatchManager.Instance.CastCard(_card: card);
+        }
+
+        public static void DrawCards(int numToDraw){
+            MatchManager.Instance.NewCard(numToDraw,Enums.CardFrom.Deck);
         }
     }
 }

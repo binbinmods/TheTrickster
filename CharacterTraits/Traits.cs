@@ -3,17 +3,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Obeliskial_Content;
+using static TheMagician.TraitFunctions;
 
 namespace TheMagician
 {
+
+    
     [HarmonyPatch]
     internal class Traits
     {
         // list of your trait IDs
-        public static string[] myTraitList = ["ulfvitrcalltherain","ulfvitrmagnet","ulfvitrregenerator","ulfvitrconductor","ulfvitrlifebloom"]; // TODO fill out traits
+        public static string heroName = "jack";
 
-        public static int level5ActivationCounter = 0;
-        public static int level5MaxActivations = 3;
+        public static string subclassname = "magician";
+
+        public static string debugBase = "Binbin - Testing " + heroName + " ";
+
+        public static string[] simpleTraitList = ["trickery","practice","study","trickupyoursleeves","learnrealmagic","secretpocket","lightningfast","distractingact","drawpower"];
+        public static string[] myTraitList = (string[])simpleTraitList.Select(trait=>heroName+trait); // Needs testing
+
+        public static int cardsPlayedPerTurn = 0;
+        //public static int level5MaxActivations = 3;
 
         public static void DoCustomTrait(string _trait, ref Trait __instance)
         {
@@ -35,42 +45,72 @@ namespace TheMagician
             List<string> heroHand = MatchManager.Instance.GetHeroHand(_character.HeroIndex);
             Hero[] teamHero = MatchManager.Instance.GetTeamHero();
             NPC[] teamNpc = MatchManager.Instance.GetTeamNPC();
+            
+            
+            string trait0 = heroName+simpleTraitList[0];
+            string trait2a = heroName+simpleTraitList[3];
+            string trait2b = heroName+simpleTraitList[4];
+            string trait4a = heroName+simpleTraitList[7];
+            string trait4b = heroName+simpleTraitList[8];
 
             // activate traits
             // I don't know how to set the combatLog text I need to do that for all of the traits
-            if (_trait == "ulfvitrcalltherain")
-            { // TODO trait 0
+            if (_trait == trait0)
+            { // TODO  Front hero starts with 1 Evasion
                 string traitName = _trait;
-                
+                Character frontHero = GetFrontCharacter(teamHero);
+                frontHero.SetAuraTrait(_character, "evasion", 1);
+                _character.HeroItem.ScrollCombatText(Texts.Instance.GetText("traits_" + traitName), Enums.CombatScrollEffectType.Trait);
             }
 
                     
-            else if (_trait == "ulfvitrmagnet")
-            { // TODO trait 2a
+            else if (_trait == trait2a)
+            { // After you play 4 cards, Gain 1 energy and draw 1 card. [3x/turn]
                 string traitName = _trait;
-                
+                cardsPlayedPerTurn +=1;
+                if (cardsPlayedPerTurn >=3 && CanIncrementActivations(traitName,traitData)){
+                    IncrementActivations(traitName);
+                    _character.ModifyEnergy(1, true);
+                    DrawCards(1);
+                    DisplayRemainingCharges(ref _character,traitName,traitData,"energy");
+                    PlaySoundEffect(_character,"energy");
+                    cardsPlayedPerTurn=0;
+                }                
             }
 
-                
-             
-            else if (_trait == "ulfvitrregenerator")
-            { // TODO trait 2b
+            else if (_trait == trait2b)
+            { // TODO The first time you play a Lightning spell each turn, gain 1 Inspire 1 Evasion.
                 string traitName = _trait;
-                
+                if (_castedCard!=null&&_castedCard){
+
+                    if (!((UnityEngine.Object)MatchManager.Instance != (UnityEngine.Object)null) || !((UnityEngine.Object)_castedCard != (UnityEngine.Object)null))
+                        return;
+
+                    if (CanIncrementActivations(traitName,traitData)){
+                        WhenYouPlayXGainY(Enums.CardType.Lightning_Spell,"inspire",1, _castedCard,ref _character,traitName);
+                        WhenYouPlayXGainY(Enums.CardType.Lightning_Spell,"evasion",1, _castedCard,ref _character,traitName);
+                        IncrementActivations(traitName);
+                    }
+                }
             }
 
-            else if (_trait == "ulfvitrconductor")
-            { // TODO trait 4a
+            else if (_trait == trait4a)
+            { // TODO After you play a card, gain 2 Stealth if you had none.
                 string traitName = _trait;
-                
+                if (_castedCard!=null&&  !_character.HasEffect("stealth")){
+                    _character.SetAuraTrait(_character, "stealth", 2);
+                    _character.HeroItem.ScrollCombatText(Texts.Instance.GetText("traits_" + traitName), Enums.CombatScrollEffectType.Trait);
+                }   
             }
 
-            else if (_trait == "ulfvitrlifebloom")
-            { // TODO trait 4b
+            else if (_trait == trait4b)
+            { // TODO when you draw a card, gain 1 Powerful, +5 Max powerful charges on Magician, lose all powerful charges at end of turn
                 string traitName = _trait;
-                
+                if (_character.IsHero && _character != null && _character.Alive){
+                    _character.SetAuraTrait(_character, "powerful", 1);
+                    _character.HeroItem.ScrollCombatText(Texts.Instance.GetText("traits_" + traitName), Enums.CombatScrollEffectType.Trait);
+                }
             }
-
         }
 
         [HarmonyPrefix]
@@ -97,62 +137,58 @@ namespace TheMagician
         [HarmonyPatch(typeof(Character), "SetEvent")]
         public static void SetEventPrefix(ref Character __instance, ref Enums.EventActivation theEvent, Character target = null)
         {
-            /*if (theEvent == Enums.EventActivation.AuraCurseSet && !__instance.IsHero && target != null && target.IsHero && target.HaveTrait("ulfvitrconductor") && __instance.HasEffect("spark"))
-            { // if NPC has wet applied to them, deal 50% of their sparks as indirect lightning damage
-                __instance.IndirectDamage(Enums.DamageType.Lightning, Functions.FuncRoundToInt((float)__instance.GetAuraCharges("spark") * 0.5f));
-            }
-            if (theEvent == Enums.EventActivation.BeginTurn && __instance.IsHero && (__instance.HaveTrait("pestilyhealingtoxins")||__instance.HaveTrait("pestilytoxichealing"))){
-                level5ActivationCounter=0;
+            string traitOfInterest = myTraitList[3]; //trickupyoursleeves
+            if (theEvent == Enums.EventActivation.BeginTurn && __instance.IsHero && __instance.HaveTrait(traitOfInterest)){
+                cardsPlayedPerTurn=0;
                 // Plugin.Log.LogInfo("Binbin - PestilyBiohealer - Reset Activation Counter: "+ level5ActivationCounter);
             }
             
-            */
+
+            
         }
 
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(AtOManager), "HeroLevelUp")]
+        public static bool HeroLevelUpPrefix(ref AtOManager __instance, Hero[] ___teamAtO, int heroIndex, string traitId)
+        {
+            Hero hero = ___teamAtO[heroIndex];
+            Plugin.Log.LogDebug(debugBase + "Level up before conditions for subclass "+ hero.SubclassName + " trait id " + traitId);
+
+            string traitOfInterest = myTraitList[4]; //Learn real magic
+            if (hero.AssignTrait(traitId))
+            {
+                TraitData traitData = Globals.Instance.GetTraitData(traitId);
+                if ((UnityEngine.Object) traitData != (UnityEngine.Object) null && traitId==traitOfInterest)
+                {
+                    Plugin.Log.LogDebug(debugBase + "Learn Real Magic inside conditions");
+                    Globals.Instance.SubClass[hero.SubclassName].HeroClassSecondary=Enums.HeroClass.Mage;
+                }
+                
+            }
+            return true;
+        }
 
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(AtOManager),"GlobalAuraCurseModificationByTraitsAndItems")]
         public static void GlobalAuraCurseModificationByTraitsAndItemsPostfix(ref AtOManager __instance, ref AuraCurseData __result, string _type, string _acId, Character _characterCaster, Character _characterTarget){
-            // Shadow Poison -  +1 Shadow Damage per 10 stacks of Poison on you. 
-            // Antidote - You are immune to Poison damage, Poison stacks on you are limited to 300
-            /*
-            if(_acId=="poison")
+            //Draw Power increases max powerful charges by 5 lose an additional 3 charges per turn         
+
+            string traitToUpdate =myTraitList[8]; 
+            if(_acId=="powerful")
             {
                 if(_type=="set")
                 {
-                    if (_characterTarget != null && __instance.CharacterHaveTrait(_characterTarget.SubclassName, "pestilyshadowpoison"))
+                    if (_characterTarget != null && __instance.CharacterHaveTrait(_characterTarget.SubclassName, traitToUpdate))
                     {   
-                        __result.AuraDamageType = Enums.DamageType.Shadow;
-                        int damageIncrease = FloorToInt((float )_characterTarget.GetAuraCharges("poison")/10.0f);
-                        //__result.AuraDamageIncreasedPerStack=0.1f;
-                        __result.AuraDamageIncreasedTotal = damageIncrease;
+                        Plugin.Log.LogInfo(debugBase + " Set Powerful with " + traitToUpdate);
+                        __result.MaxCharges += 5;
+                        __result.MaxMadnessCharges += 5;
+                        __result.AuraConsumed+=3;
+                        // __result.ConsumeAll=true;
                     }
-                    if (_characterTarget != null && __instance.CharacterHaveTrait(_characterTarget.SubclassName, "pestilyantidote"))
-                    {   
-                        __result.MaxCharges = 300;
-                        __result.ProduceDamageWhenConsumed = false;
-                        __result.DamageWhenConsumedPerCharge = 0.0f;
-                        Plugin.Log.LogInfo("Binbin - PestilyBiohealer - Setting Poison: "+ __result.DamageWhenConsumedPerCharge);
-
-                    }
-                }
-                if(_type=="consume")
-                {
-                    if (_characterCaster != null && __instance.CharacterHaveTrait(_characterCaster.SubclassName, "pestilyantidote"))
-                    {   
-                        Plugin.Log.LogInfo("Binbin - PestilyBiohealer - Consuming Poison");
-
-                        __result.MaxCharges = 300;
-                        __result.ProduceDamageWhenConsumed=false;
-                        __result.DamageWhenConsumedPerCharge=0.0f;
-                        Plugin.Log.LogInfo("Binbin - PestilyBiohealer - Consuming Poison: "+ __result.DamageWhenConsumedPerCharge);
-                    }
-                }
-                */
+                }                
             }
-
-
-        
+        }
     }
 }

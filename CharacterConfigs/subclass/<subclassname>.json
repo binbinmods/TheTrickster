@@ -8,7 +8,7 @@
         "{\n    \"UnitsInDeck\": 2,\n    \"Card\": \"intercept\"\n}",
         "{\n    \"UnitsInDeck\": 2,\n    \"Card\": \"rend\"\n}",
         "{\n    \"UnitsInDeck\": 2,\n    \"Card\": \"barricade\"\n}",
-        "{\n    \"UnitsInDeck\": 1,\n    \"Card\": \"<characterstartingitem>\"\n}"
+        "{\n    \"UnitsInDeck\": 1,\n    \"Card\": \"<characterstartingcard>\"\n}"
     ],
     "ChallengePack0": "<OC pack, ex - defender> ",
     "ChallengePack1": "<OC pack, ex - swordman> ",
