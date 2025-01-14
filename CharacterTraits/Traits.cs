@@ -101,9 +101,9 @@ namespace TheMagician
                 {
 
                     if (!((UnityEngine.Object)MatchManager.Instance != (UnityEngine.Object)null) || !((UnityEngine.Object)_castedCard != (UnityEngine.Object)null)) { return; }
-                    CardData skill = GetRandomHighestCostCard(heroHand,Enums.CardType.Skill);
-                    CardData spell = GetRandomHighestCostCard(heroHand,Enums.CardType.Spell);
-                    CardData book = GetRandomHighestCostCard(heroHand,Enums.CardType.Book);
+                    CardData skill = GetRandomHighestCostCard(Enums.CardType.Skill, heroHand);
+                    CardData spell = GetRandomHighestCostCard(Enums.CardType.Spell, heroHand);
+                    CardData book = GetRandomHighestCostCard(Enums.CardType.Book, heroHand);
                     
                     ReduceCardCost(ref skill, _character, 1,isPermanent:true);
                     ReduceCardCost(ref spell, _character, 1,isPermanent:true);

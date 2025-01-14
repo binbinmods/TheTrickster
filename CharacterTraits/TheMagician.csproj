@@ -39,4 +39,10 @@
       <HintPath>../../../!libs/Obeliskial_Content.dll</HintPath>
     </Reference>
   </ItemGroup>
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="../../../../plugins" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="../../Ready to Ship/Shaun/BepInEx/plugins" />
+  </Target>
+
 </Project>

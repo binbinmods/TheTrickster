@@ -1284,6 +1284,7 @@ namespace TheMagician
             return sum;
         }
 
+        
         public static void ReduceCardCost(ref CardData cardData, Character currentCharacter, int amountToReduce = 1, bool isPermanent = false)
         {
             if (isPermanent)
@@ -1300,8 +1301,22 @@ namespace TheMagician
             MatchManager.Instance.CreateLogCardModification(cardData.InternalId, MatchManager.Instance.GetHero(currentCharacter.HeroIndex));
         }
 
-        public static CardData GetRandomHighestCostCard(List<string> heroHand, Enums.CardType cardType)
+
+        /// <summary>
+        /// Gets the highest cost card in your hand. If multiple of the same cost, randomly chooses one.
+        /// </summary>
+        /// <param name="heroHand"> The hero's hand. If null, gets the current active hero's hand.</param>
+        /// <param name="cardType">The cardType you are looking for. Use None to specify any card.</param>
+        /// <returns>A random card with the highest cost of cardType. Returns null if card is not found.</returns>
+        public static CardData GetRandomHighestCostCard(Enums.CardType cardType, List<string> heroHand= null)
         {
+            if (MatchManager.Instance == null)
+            {
+                LogError("Null MatchManager");
+                return null;
+            }
+            heroHand ??= MatchManager.Instance.GetHeroHand(MatchManager.Instance.GetHeroActive());
+
             int num1 = 0;
             List<CardData> cardDataList = new(); 
             for (int index = 0; index < heroHand.Count; ++index)
@@ -1326,21 +1341,37 @@ namespace TheMagician
             return cardData1;
         }
 
-        public static List<CardData> GetHandCardDataList(Character character, Enums.CardType cardType = Enums.CardType.None, int equalOrAboveCertainCost = 0 )
+        /// <summary>
+        /// Gets cards of a certain type from the active character's hand.
+        /// </summary>
+        /// <param name="cardType">The card type</param>
+        /// <param name="equalOrAboveCertainCost">The cards must be greater than or equal to this amount</param>
+        /// <param name="lessThanOrEqualToThisCost">The cards must be less than or equal to this amount</param>
+        /// <returns></returns>
+        public static List<CardData> GetCardsFromHand(Enums.CardType cardType = Enums.CardType.None, int equalOrAboveCertainCost = 0, int lessThanOrEqualToThisCost = 100)
         {
+            Character character = MatchManager.Instance.GetHeroHeroActive();
             List<string> heroHand = MatchManager.Instance.GetHeroHand(character.HeroIndex);
 
             List<CardData> cardDataList = new List<CardData>();
             for (int index = 0; index < heroHand.Count; ++index)
             {
                 CardData cardData = MatchManager.Instance.GetCardData(heroHand[index]);
-                if ((UnityEngine.Object)cardData != (UnityEngine.Object)null && cardData.GetCardFinalCost() > 0 && (cardData.GetCardTypes().Contains(cardType)||cardType==Enums.CardType.None) && cardData.GetCardFinalCost() >= equalOrAboveCertainCost)
+                if ((UnityEngine.Object)cardData != (UnityEngine.Object)null && cardData.GetCardFinalCost() > 0 && (cardData.GetCardTypes().Contains(cardType)||cardType==Enums.CardType.None) && cardData.GetCardFinalCost() >= equalOrAboveCertainCost && cardData.GetCardFinalCost() <= lessThanOrEqualToThisCost)
                     cardDataList.Add(cardData);
             }
             return cardDataList;
         }
 
-        public static List<CardData> GetHandCardDataList(List<string> heroHand, Enums.CardType cardType = Enums.CardType.None, int equalOrAboveCertainCost = 0 )
+        /// <summary>
+        /// Gets cards of a certain type from your hand.
+        /// </summary>
+        /// <param name="heroHand">The hand</param>
+        /// <param name="cardType">The card type</param>
+        /// <param name="equalOrAboveCertainCost">The cards must be greater than or equal to this amount</param>
+        /// <param name="lessThanOrEqualToThisCost">The cards must be less than or equal to this amount</param>
+        /// <returns></returns>
+        public static List<CardData> GetCardsFromHand(List<string> heroHand, Enums.CardType cardType = Enums.CardType.None, int equalOrAboveCertainCost = 0, int lessThanOrEqualToThisCost = 100)
         {
             // List<string> heroHand = MatchManager.Instance.GetHeroHand(character.HeroIndex);
 
@@ -1348,16 +1379,22 @@ namespace TheMagician
             for (int index = 0; index < heroHand.Count; ++index)
             {
                 CardData cardData = MatchManager.Instance.GetCardData(heroHand[index]);
-                if ((UnityEngine.Object)cardData != (UnityEngine.Object)null && cardData.GetCardFinalCost() > 0 && (cardData.GetCardTypes().Contains(cardType)||cardType==Enums.CardType.None) && cardData.GetCardFinalCost() >= equalOrAboveCertainCost)
+                if ((UnityEngine.Object)cardData != (UnityEngine.Object)null && cardData.GetCardFinalCost() > 0 && (cardData.GetCardTypes().Contains(cardType)||cardType==Enums.CardType.None) && cardData.GetCardFinalCost() >= equalOrAboveCertainCost && cardData.GetCardFinalCost() <= lessThanOrEqualToThisCost)
                     cardDataList.Add(cardData);
             }
             return cardDataList;
         }
 
+
+        /// <summary>
+        /// Gets the rightmost card in a hand. Syntatic Sugar for MatchManager.Instance.GetCardData(heroHand.Last());
+        /// </summary>
+        /// <param name="heroHand">Hand to get the card from.</param>
+        /// <returns>The rightmore card</returns>
         public static CardData GetRightmostCard(List<string> heroHand)
         {
             // MatchManager.Instance.GetCardData(heroHand.Last());
-            return MatchManager.Instance.GetCardData(heroHand.Last());;
+            return MatchManager.Instance.GetCardData(heroHand.Last());
         }
 
     }
