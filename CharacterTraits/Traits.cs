@@ -153,7 +153,7 @@ namespace TheMagician
         {
             Hero hero = ___teamAtO[heroIndex];
             Plugin.Log.LogDebug(debugBase + "Level up before conditions for subclass "+ hero.SubclassName + " trait id " + traitId);
-
+            
             string traitOfInterest = myTraitList[4]; //Learn real magic
             if (hero.AssignTrait(traitId))
             {
