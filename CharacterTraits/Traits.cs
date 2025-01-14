@@ -105,9 +105,9 @@ namespace TheMagician
                     CardData spell = GetRandomHighestCostCard(Enums.CardType.Spell, heroHand);
                     CardData book = GetRandomHighestCostCard(Enums.CardType.Book, heroHand);
                     
-                    ReduceCardCost(ref skill, _character, 1,isPermanent:true);
-                    ReduceCardCost(ref spell, _character, 1,isPermanent:true);
-                    ReduceCardCost(ref book, _character, 1,isPermanent:true);
+                    ReduceCardCost(ref skill, _character, 1,isPermanent:false);
+                    ReduceCardCost(ref spell, _character, 1,isPermanent:false);
+                    ReduceCardCost(ref book, _character, 1,isPermanent:false);
 
                     _character.HeroItem.ScrollCombatText(Texts.Instance.GetText("traits_" + traitName), Enums.CombatScrollEffectType.Trait);
 

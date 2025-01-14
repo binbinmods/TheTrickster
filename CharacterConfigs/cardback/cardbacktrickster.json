@@ -4,7 +4,7 @@
     "CardbackID": "cardbacktrickster",
     "CardbackName": "Default",
     "CardbackOrder": 1000,
-    "CardbackSprite": "cardbacktrickster",
+    "CardbackSprite": "CardBackScout",
     "CardbackSubclass": "trickster",
     "Locked": false,
     "ObeliskLevel": 0,
