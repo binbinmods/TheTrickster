@@ -1,5 +1,5 @@
 {
-    "Activation": "<Skip>",
+    "Activation": "",
     "AuraCurseBonus1": "",
     "AuraCurseBonus2": "",
     "AuraCurseBonus3": "",
@@ -23,12 +23,12 @@
     "DamageBonusPercentValue": 0.0,
     "DamageBonusPercentValue2": 0.0,
     "DamageBonusPercentValue3": 0.0,
-    "Description": "<Description of what the Level 3 upgrade does>",
+    "Description": "",
     "HealFlatBonus": 0,
     "HealPercentBonus": 0.0,
     "HealReceivedFlatBonus": 0,
     "HealReceivedPercentBonus": 0.0,
-    "ID": "<ID of the trait. Must match the name of the file and the ID found in <subclassname>.json. Example - characternametrait2a or ulfvitrmagnet>",
+    "ID": "tricksterstudy",
     "ResistModified1": "None",
     "ResistModified2": "None",
     "ResistModified3": "None",
@@ -36,8 +36,8 @@
     "ResistModifiedValue2": 0,
     "ResistModifiedValue3": 0,
     "TimesPerRound": 0,
-    "TimesPerTurn": 3,
-    "TraitCard": "",
+    "TimesPerTurn": 0,
+    "TraitCard": "tricksterstudy",
     "TraitCardForAllHeroes": "",
-    "TraitName": "<Name of the trait. Example - Magnet"
+    "TraitName": "Study"
 }

@@ -1,0 +1,20 @@
+{
+    "Card0": "tricksterthrowingcard",
+    "Card1": "setup",
+    "Card2": "tricksterfanofcards",
+    "Card3": "trickstercardistry",
+    "Card4": "bookworm",
+    "Card5": "scrollofdefense",
+    "CardSpecial0": "theencyclopedia",
+    "CardSpecial1": "trickstercardtoss",
+    "PackClass": "Scout",
+    "PackID": "tricky",
+    "PackName": "Tricky",
+    "PerkList": [
+        "mainperkcold2",
+        "mainperkchill1",
+        "mainperkchill2b",
+        "mainperkchill2c"
+    ],
+    "RequiredClass": ""
+}

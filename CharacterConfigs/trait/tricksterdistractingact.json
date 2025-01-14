@@ -1,5 +1,5 @@
 {
-    "Activation": "None",
+    "Activation": "CastCard",
     "AuraCurseBonus1": "",
     "AuraCurseBonus2": "",
     "AuraCurseBonus3": "",
@@ -23,12 +23,12 @@
     "DamageBonusPercentValue": 0.0,
     "DamageBonusPercentValue2": 0.0,
     "DamageBonusPercentValue3": 0.0,
-    "Description": "",
+    "Description": "+2 Stealth, +1 Evasion. After you play a card, gain 1 Stealth if you had none.",
     "HealFlatBonus": 0,
     "HealPercentBonus": 0.0,
     "HealReceivedFlatBonus": 0,
     "HealReceivedPercentBonus": 0.0,
-    "ID": "<ID of the trait. Must match the name of the file and the ID found in <subclassname>.json. Example - characternametrait3a or ulfvitrelectriccurrent>",
+    "ID": "tricksterdistractingact",
     "ResistModified1": "None",
     "ResistModified2": "None",
     "ResistModified3": "None",
@@ -37,7 +37,7 @@
     "ResistModifiedValue3": 0,
     "TimesPerRound": 0,
     "TimesPerTurn": 0,
-    "TraitCard": "<ID of the associated card. Example - characternametraitcard3a or ulfvitrelectriccurrent>",
+    "TraitCard": "",
     "TraitCardForAllHeroes": "",
-    "TraitName": "<Name of the trait. Example - Electric Current"
+    "TraitName": "Distracting Act"
 }

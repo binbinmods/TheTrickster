@@ -19,8 +19,8 @@ namespace TheMagician
         private readonly Harmony harmony = new(PluginInfo.PLUGIN_GUID);
         internal static ManualLogSource Log;
 
-        public static string characterName = "Shaun Ee";
-        public static string subclassName = "Magician"; // needs caps
+        public static string characterName = "Shaun";
+        public static string subclassName = "Trickster"; // needs caps
         public static string debugBase = "Binbin - Testing " + characterName + " ";
 
         private void Awake()

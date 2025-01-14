@@ -1284,9 +1284,22 @@ namespace TheMagician
             return sum;
         }
 
-        
-        public static void ReduceCardCost(ref CardData cardData, Character currentCharacter, int amountToReduce = 1, bool isPermanent = false)
+        /// <summary>
+        /// Reduces the cost of a card.
+        /// </summary>
+        /// <param name="cardData">Card to Reduce.</param>
+        /// <param name="currentCharacter">character to reduce the cards for. If null, gets the current active hero.</param>
+        /// <param name="amountToReduce">Amount to reduce the card's cost by</param>
+        /// <param name="isPermanent">If true, makes the reduction permanent.</param>
+        public static void ReduceCardCost(ref CardData cardData, Character currentCharacter= null, int amountToReduce = 1, bool isPermanent = false)
         {
+            if (MatchManager.Instance == null)
+            {
+                LogError("Null MatchManager");
+                return;
+            }
+
+            currentCharacter ??= MatchManager.Instance.GetHeroHeroActive();
             if (isPermanent)
             {
                 cardData.EnergyReductionPermanent += amountToReduce;
