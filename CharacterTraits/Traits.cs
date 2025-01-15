@@ -256,12 +256,12 @@ namespace TheMagician
             UnsetMage(AtOManager.Instance);
         }
 
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(AtOManager), nameof(AtOManager.SaveGame))]
-        public static void SaveGamePostfix(AtOManager __instance)
-        {
-            UnsetMage(__instance);
-        }
+        // [HarmonyPostfix]
+        // [HarmonyPatch(typeof(AtOManager), nameof(AtOManager.SaveGame))]
+        // public static void SaveGamePostfix(AtOManager __instance)
+        // {
+        //     UnsetMage(__instance);
+        // }
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(AtOManager), nameof(AtOManager.LoadGame))]
