@@ -30,7 +30,7 @@
     "HitSound": "",
     "HP": 73,
     "ID": "trickster",
-    "Item": "hiddenpouch",
+    "Item": "tricksterhiddenpouch",
     "MaxHP": [
         0,
         5,

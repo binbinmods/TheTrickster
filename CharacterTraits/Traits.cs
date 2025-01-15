@@ -219,6 +219,7 @@ namespace TheMagician
 
         public static void UnsetMage(AtOManager __instance)
         {
+            if (__instance==null){return;}
             if (!Globals.Instance.SubClass.ContainsKey("trickster"))
             {
                 return;
@@ -247,6 +248,12 @@ namespace TheMagician
         public static void BeginAdventurePostfix(AtOManager __instance)
         {
             UnsetMage(__instance);
+        }
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(AtOManager), nameof(HeroSelectionManager.Instantiate))]
+        public static void HeroSelectionManagerInstantiatePostfix(HeroSelectionManager __instance)
+        {
+            UnsetMage(AtOManager.Instance);
         }
 
         [HarmonyPostfix]

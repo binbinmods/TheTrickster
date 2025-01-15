@@ -4,9 +4,9 @@
     <TargetFramework>netstandard2.1</TargetFramework>
 	<RootNamespace>TheMagician</RootNamespace>
 	<Product>TheMagician</Product>
-    <AssemblyName>com.binbin.themagician</AssemblyName>
-    <Description>Hero, The Magician</Description>
-    <Version>0.9.3</Version>
+    <AssemblyName>com.binbin.thetrickster</AssemblyName>
+    <Description>Shaun Eello, The Trickster</Description>
+    <Version>1.0.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
