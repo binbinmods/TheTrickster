@@ -6,6 +6,7 @@ using Obeliskial_Content;
 using static TheMagician.CustomFunctions;
 using static TheMagician.Plugin;
 using UnityEngine;
+using System.Collections;
 
 namespace TheMagician
 {
@@ -70,7 +71,7 @@ namespace TheMagician
             { // Front hero starts with 1 Evasion
                 string traitName = _trait;
                 LogDebug(traitName);
-                Character frontHero = GetFrontCharacter(teamHero);
+                Character frontHero = teamHero.First();
                 LogDebug($"Trait: {traitName} - Front hero: {frontHero.SourceName}");
                 frontHero.SetAuraTrait(_character, "evasion", 1);
                 LogDebug($"Trait: {traitName} - Evasion set");
@@ -87,17 +88,28 @@ namespace TheMagician
                 {
                     LogDebug($"Trait: {traitName} Casted Card - {_castedCard.Id}. IsSmallWeap - {_castedCard.HasCardType(Enums.CardType.Small_Weapon)}");
 
-                    DrawCards(1);
-                    Globals.Instance.WaitForSeconds(0.5f);
+                    PlayCardForFree("tricksterspecialdraw");
 
-                    CardData cardToReduce = GetRightmostCard(heroHand);
-                    if (cardToReduce == null)
+                    MatchManager matchManager = MatchManager.Instance;
+                    if(matchManager!=null)
                     {
-                        return;
+                        LogDebug("Decrement globalVanishCardsNum - draw");
+                        int globalVanishCardsNum = Traverse.Create(matchManager).Field("GlobalVanishCardsNum").GetValue<int>();
+                        globalVanishCardsNum -=1;
+                        Traverse.Create(matchManager).Field("GlobalVanishCardsNum").SetValue(globalVanishCardsNum);
                     }
-                    LogDebug($"Trait: {traitName} Reducing Card Cost. Card to Reduce-{cardToReduce.Id}");
 
-                    ReduceCardCost(ref cardToReduce, _character, 2, isPermanent: true);
+                    // DrawCards(1);
+                    // Globals.Instance.WaitForSeconds(1.5f);
+
+                    // CardData cardToReduce = GetRightmostCard(heroHand);
+                    // if (cardToReduce == null)
+                    // {
+                    //     return;
+                    // }
+                    // LogDebug($"Trait: {traitName} Reducing Card Cost. Card to Reduce-{cardToReduce.Id}");
+
+                    // ReduceCardCost(ref cardToReduce, _character, 2, isPermanent: true);
                     IncrementTraitActivations(_trait);
                     _character.HeroItem.ScrollCombatText(Texts.Instance.GetText("traits_" + traitName), Enums.CombatScrollEffectType.Trait);
 
@@ -130,7 +142,17 @@ namespace TheMagician
                 if (_castedCard != null && _character.GetAuraCharges("stealth") <= 0)
                 {
                     LogDebug($"Trait: {traitName} Gaining Stealth - {_character.GetAuraCharges("stealth")}");
-                    _character.SetAuraTrait(_character, "stealth", 1);
+                    PlayCardForFree("tricksterspecialstealth");
+
+                    MatchManager matchManager = MatchManager.Instance;
+                    if(matchManager!=null)
+                    {
+                        LogDebug("Decrement globalVanishCardsNum - stealth");
+                        int globalVanishCardsNum = Traverse.Create(matchManager).Field("GlobalVanishCardsNum").GetValue<int>();
+                        globalVanishCardsNum -=1;
+                        Traverse.Create(matchManager).Field("GlobalVanishCardsNum").SetValue(globalVanishCardsNum);
+                    }
+                    // _character.SetAuraTrait(_character, "stealth", 1);
                     _character.HeroItem.ScrollCombatText(Texts.Instance.GetText("traits_" + traitName), Enums.CombatScrollEffectType.Trait);
                 }
             }
@@ -282,7 +304,7 @@ namespace TheMagician
                 case "powerful":
                     if (IfCharacterHas(characterOfInterest, CharacterHas.Trait, trait4b, AppliesTo.ThisHero))
                     {
-                        LogInfo($"Shaun has with {trait4b}");
+                        LogInfo($"Shaun has {trait4b}");
                         __result.MaxCharges += 5;
                         __result.MaxMadnessCharges += 5;
                         __result.AuraConsumed += 2;
@@ -290,6 +312,28 @@ namespace TheMagician
                     }
                     break;
             }
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(MatchManager), nameof(MatchManager.JustCastedCo))]
+        static IEnumerator JustCastedCoWrapper(IEnumerator result)
+        {
+            // Run original enumerator code
+            while (result.MoveNext())
+                yield return result.Current;
+            
+            // Run your postfix
+
+            LogDebug("JustCastedCoWrapper");
+            Character _character = MatchManager.Instance.GetHeroHeroActive();
+
+            if (_character.GetAuraCharges("stealth") <= 0)
+            {
+                LogDebug($"Trait: {trait4a} Gaining Stealth - {_character.GetAuraCharges("stealth")}");
+                _character.SetAuraTrait(_character, "stealth", 1);
+                _character.HeroItem.ScrollCombatText(Texts.Instance.GetText("traits_" + trait4a), Enums.CombatScrollEffectType.Trait);
+            }
+
         }
     }
 }

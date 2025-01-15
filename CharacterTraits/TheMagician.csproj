@@ -6,7 +6,7 @@
 	<Product>TheMagician</Product>
     <AssemblyName>com.binbin.themagician</AssemblyName>
     <Description>Hero, The Magician</Description>
-    <Version>1.0.0</Version>
+    <Version>0.9.3</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
