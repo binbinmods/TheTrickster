@@ -477,15 +477,24 @@ namespace TheMagician
 
         public static List<int> GetValidCharacters(Character[] characters)
         {
+            LogDebug("GetValidCharacters");
+            List<string> allChars = [];
+            foreach(Character character in characters)
+            {
+                allChars.Append(character.SourceName);
+            }
+            LogDebug("characterList" + string.Join(",",allChars));
+            
             List<int> output_list = [];
             for (int index = 0; index < characters.Length; ++index)
             {
-                Character character = characters[index];
-                if (character.Alive && character != null)
+                // Character character = characters[index];
+                if (characters[index].Alive && characters[index] != null)
                 {
                     output_list.Add(index);
                 }
             }
+            LogDebug("GetValidCharacters END");
             return output_list;
         }
         /// <summary>
@@ -496,9 +505,12 @@ namespace TheMagician
 
         public static Character GetFrontCharacter(Character[] characters)
         {
+
             List<int> validCharacters = GetValidCharacters(characters);
+            LogDebug("Front Character - Valid Character indices: " + string.Join(",", validCharacters));
             int frontIndex = validCharacters.First(); //Might throw error if no valid characters, but that shouldn't be possible
             Character frontChar = characters[frontIndex];
+            LogDebug("Front Character - Front Character: " + frontChar.SourceName);
             return frontChar;
         }
 
@@ -1298,6 +1310,10 @@ namespace TheMagician
                 LogError("Null MatchManager");
                 return;
             }
+            if (cardData == null)
+            {                
+                return;
+            }
 
             currentCharacter ??= MatchManager.Instance.GetHeroHeroActive();
             if (isPermanent)
@@ -1387,7 +1403,7 @@ namespace TheMagician
         public static List<CardData> GetCardsFromHand(List<string> heroHand, Enums.CardType cardType = Enums.CardType.None, int equalOrAboveCertainCost = 0, int lessThanOrEqualToThisCost = 100)
         {
             // List<string> heroHand = MatchManager.Instance.GetHeroHand(character.HeroIndex);
-
+            LogDebug("GetCardsFromHand");
             List<CardData> cardDataList = new List<CardData>();
             for (int index = 0; index < heroHand.Count; ++index)
             {
@@ -1406,6 +1422,7 @@ namespace TheMagician
         /// <returns>The rightmore card</returns>
         public static CardData GetRightmostCard(List<string> heroHand)
         {
+            LogDebug("GetRightmostCard");
             // MatchManager.Instance.GetCardData(heroHand.Last());
             return MatchManager.Instance.GetCardData(heroHand.Last());
         }

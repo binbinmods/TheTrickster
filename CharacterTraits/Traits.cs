@@ -15,9 +15,9 @@ namespace TheMagician
     internal class Traits
     {
         // list of your trait IDs
-        public static string heroName = "jack";
+        public static string heroName = "shaun eello";
 
-        public static string subclassname = "magician";
+        public static string subclassname = "trickster";
 
         public static string debugBase = "Binbin - Testing " + heroName + " ";
 
@@ -35,8 +35,8 @@ namespace TheMagician
         //public static int level5MaxActivations = 3;
 
         public static string trait0 = "trickstermagictrick";
-        public static string trait2a = "tricksterstudy";
-        public static string trait2b = "trickstertrickupyoursleeve";
+        public static string trait2a = "trickstertrickupyoursleeve";
+        public static string trait2b = "tricksterlearnrealmagic";
         public static string trait4a = "tricksterdistractingact";
         public static string trait4b = "tricksterdrawpower";
 
@@ -69,8 +69,11 @@ namespace TheMagician
             if (_trait == trait0)
             { // Front hero starts with 1 Evasion
                 string traitName = _trait;
+                LogDebug(traitName);
                 Character frontHero = GetFrontCharacter(teamHero);
+                LogDebug($"Trait: {traitName} - Front hero: {frontHero.SourceName}");
                 frontHero.SetAuraTrait(_character, "evasion", 1);
+                LogDebug($"Trait: {traitName} - Evasion set");
                 _character.HeroItem.ScrollCombatText(Texts.Instance.GetText("traits_" + traitName), Enums.CombatScrollEffectType.Trait);
             }
 
@@ -79,15 +82,22 @@ namespace TheMagician
             { // When you play your first Small Weapon each turn, draw a card and reduce its cost by 2.
                 string traitName = _trait;
                 // cardsPlayedPerTurn += 1;
+                LogDebug(traitName);
                 if (CanIncrementTraitActivations(_trait) && _castedCard.HasCardType(Enums.CardType.Small_Weapon))
                 {
+                    LogDebug($"Trait: {traitName} Casted Card - {_castedCard.Id}. IsSmallWeap - {_castedCard.HasCardType(Enums.CardType.Small_Weapon)}");
+
                     DrawCards(1);
+                    Globals.Instance.WaitForSeconds(0.5f);
+
                     CardData cardToReduce = GetRightmostCard(heroHand);
                     if (cardToReduce == null)
                     {
                         return;
                     }
-                    ReduceCardCost(ref cardToReduce, _character, 2,isPermanent:true);
+                    LogDebug($"Trait: {traitName} Reducing Card Cost. Card to Reduce-{cardToReduce.Id}");
+
+                    ReduceCardCost(ref cardToReduce, _character, 2, isPermanent: true);
                     IncrementTraitActivations(_trait);
                     _character.HeroItem.ScrollCombatText(Texts.Instance.GetText("traits_" + traitName), Enums.CombatScrollEffectType.Trait);
 
@@ -97,28 +107,29 @@ namespace TheMagician
             else if (_trait == trait2b)
             { // Subclass Mage. At the start of your turn, reduce the cost of your highest cost Skill, Spell and Book by 1.
                 string traitName = _trait;
-                if (_castedCard != null && _castedCard)
-                {
+                LogDebug(traitName);
 
-                    if (!((UnityEngine.Object)MatchManager.Instance != (UnityEngine.Object)null) || !((UnityEngine.Object)_castedCard != (UnityEngine.Object)null)) { return; }
-                    CardData skill = GetRandomHighestCostCard(Enums.CardType.Skill, heroHand);
-                    CardData spell = GetRandomHighestCostCard(Enums.CardType.Spell, heroHand);
-                    CardData book = GetRandomHighestCostCard(Enums.CardType.Book, heroHand);
-                    
-                    ReduceCardCost(ref skill, _character, 1,isPermanent:false);
-                    ReduceCardCost(ref spell, _character, 1,isPermanent:false);
-                    ReduceCardCost(ref book, _character, 1,isPermanent:false);
+                CardData skill = GetRandomHighestCostCard(Enums.CardType.Skill, heroHand);
+                CardData spell = GetRandomHighestCostCard(Enums.CardType.Spell, heroHand);
+                CardData book = GetRandomHighestCostCard(Enums.CardType.Book);
 
-                    _character.HeroItem.ScrollCombatText(Texts.Instance.GetText("traits_" + traitName), Enums.CombatScrollEffectType.Trait);
+                ReduceCardCost(ref skill, _character, 1, isPermanent: false);
+                ReduceCardCost(ref spell, _character, 1, isPermanent: false);
+                ReduceCardCost(ref book, _character, 1, isPermanent: false);
 
-                }
+                _character.HeroItem.ScrollCombatText(Texts.Instance.GetText("traits_" + traitName), Enums.CombatScrollEffectType.Trait);
+
+
             }
 
             else if (_trait == trait4a)
             { // +2 Stealth, +1 Evasion. After you play a card, gain 1 Stealth if you had none.
                 string traitName = _trait;
-                if (_castedCard != null && !_character.HasEffect("stealth"))
+                LogDebug(traitName);
+                LogDebug($"{traitName} nStealth = {_character.GetAuraCharges("stealth")}");
+                if (_castedCard != null && _character.GetAuraCharges("stealth") <= 0)
                 {
+                    LogDebug($"Trait: {traitName} Gaining Stealth - {_character.GetAuraCharges("stealth")}");
                     _character.SetAuraTrait(_character, "stealth", 1);
                     _character.HeroItem.ScrollCombatText(Texts.Instance.GetText("traits_" + traitName), Enums.CombatScrollEffectType.Trait);
                 }
@@ -127,11 +138,29 @@ namespace TheMagician
             else if (_trait == trait4b)
             { // +1 Inspire. At the start of your turn, you lose 2 more Powerful. When you draw a card, gain 1 Powerful. Max Powerful charges +5
                 string traitName = _trait;
-                if (IsLivingHero(_character))
-                {
-                    _character.SetAuraTrait(_character, "powerful", 1);
-                    _character.HeroItem.ScrollCombatText(Texts.Instance.GetText("traits_" + traitName), Enums.CombatScrollEffectType.Trait);
-                }
+                // LogDebug(traitName);
+                // if (IsLivingHero(_character))
+                // {
+                //     LogDebug($"Trait: {traitName} Gaining Powerful - {_character.GetAuraCharges("powerful")}");
+
+                //     _character.SetAuraTrait(_character, "powerful", 1);
+                //     _character.HeroItem.ScrollCombatText(Texts.Instance.GetText("traits_" + traitName), Enums.CombatScrollEffectType.Trait);
+                // }
+            }
+        }
+
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(MatchManager), nameof(MatchManager.NewCard))]
+        public static void NewCardPostfix(MatchManager __instance, int numCards, Enums.CardFrom fromPlace, string comingFromCardId = "")
+        {
+            Hero activeHero = __instance.GetHeroHeroActive();
+            if (IsLivingHero(activeHero) && activeHero.HaveTrait(trait4b))
+            {
+                LogDebug($"Trait: {trait4a} Gaining Powerful - {activeHero.GetAuraCharges("powerful")}");
+
+                activeHero.SetAura(activeHero, GetAuraCurseData("powerful"), 1, fromTrait: true, useCharacterMods: true);
+                activeHero.HeroItem.ScrollCombatText(Texts.Instance.GetText("traits_" + trait4b), Enums.CombatScrollEffectType.Trait);
             }
         }
 
@@ -166,15 +195,66 @@ namespace TheMagician
         //     }
         // }
 
+        public static void UnsetMage(AtOManager __instance)
+        {
+            if (!Globals.Instance.SubClass.ContainsKey("trickster"))
+            {
+                return;
+            }
+            Hero[] teamAtO = Traverse.Create(__instance).Field("teamAtO").GetValue<Hero[]>();
+            if (teamAtO == null) { LogError("null teamAtO"); return; }
+            int tricksterIndex = -1;
+            for (int _heroIndex = 0; _heroIndex < 4; ++_heroIndex)
+            {
+                if (teamAtO[_heroIndex].SubclassName == "trickster")
+                {
+                    tricksterIndex = _heroIndex;
+                }
+            }
+
+            if (tricksterIndex == -1) { LogDebug("trickster not found"); return; }
+
+            LogDebug("Unsetting mage subclass inside conditions");
+
+            Globals.Instance.SubClass["trickster"].HeroClassSecondary = teamAtO[tricksterIndex].HaveTrait("tricksterlearnrealmagic") ? Enums.HeroClass.Mage : Enums.HeroClass.None;
+        }
+
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(AtOManager), nameof(AtOManager.BeginAdventure))]
+        public static void BeginAdventurePostfix(AtOManager __instance)
+        {
+            UnsetMage(__instance);
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(AtOManager), nameof(AtOManager.SaveGame))]
+        public static void SaveGamePostfix(AtOManager __instance)
+        {
+            UnsetMage(__instance);
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(AtOManager), nameof(AtOManager.LoadGame))]
+        public static void LoadGamePostfix(AtOManager __instance)
+        {
+            // Unsets the Subclass = mage when you reload the game and don't have the trait.
+
+            UnsetMage(__instance);
+        }
+
         [HarmonyPrefix]
         [HarmonyPatch(typeof(AtOManager), "HeroLevelUp")]
-        public static bool HeroLevelUpPrefix(ref AtOManager __instance, Hero[] ___teamAtO, int heroIndex, string traitId)
+        public static bool HeroLevelUpPrefix(ref AtOManager __instance, int heroIndex, string traitId)
         {
-            Hero hero = ___teamAtO[heroIndex];
+            LogDebug("HeroLevelUpPrefix");
+            Hero[] teamAtO = Traverse.Create(__instance).Field("teamAtO").GetValue<Hero[]>();
+            if (teamAtO == null) { LogError("null teamAtO"); return true; }
+            Hero hero = teamAtO[heroIndex];
             LogDebug("Level up before conditions for subclass " + hero.SubclassName + " trait id " + traitId);
 
             string traitOfInterest = trait2b; // Gain Mage Subclass
-            if (hero.AssignTrait(traitId))
+            if (hero.SubclassName == subclassname && traitId == trait2b)
             {
                 TraitData traitData = Globals.Instance.GetTraitData(traitId);
                 if ((UnityEngine.Object)traitData != (UnityEngine.Object)null && traitId == traitOfInterest)
