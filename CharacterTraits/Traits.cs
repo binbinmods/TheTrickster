@@ -40,7 +40,6 @@ namespace TheMagician
         public static string trait2b = "tricksterlearnrealmagic";
         public static string trait4a = "tricksterdistractingact";
         public static string trait4b = "tricksterdrawpower";
-
         public static void DoCustomTrait(string _trait, ref Trait __instance)
         {
             // get info you may need
@@ -139,10 +138,11 @@ namespace TheMagician
                 string traitName = _trait;
                 LogDebug(traitName);
                 LogDebug($"{traitName} nStealth = {_character.GetAuraCharges("stealth")}");
-                if (_castedCard != null && _character.GetAuraCharges("stealth") <= 0)
+                if (_castedCard != null && _character.GetAuraCharges("stealth") <= 0 && _castedCard.Id!="tricksterspecialstealth"&& _castedCard.Id!="tricksterspecialdraw" )
                 {
                     LogDebug($"Trait: {traitName} Gaining Stealth - {_character.GetAuraCharges("stealth")}");
-                    PlayCardForFree("tricksterspecialstealth");
+                    
+                    PlayCardForFree("tricksterspecialstealth");                        
 
                     MatchManager matchManager = MatchManager.Instance;
                     if(matchManager!=null)
@@ -314,17 +314,46 @@ namespace TheMagician
             }
         }
 
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(CharacterItem), nameof(CharacterItem.fOnMouseUp))]
+        public static void fOnMouseUpPrefix()
+        {
+            LogDebug("fOnMouseUpPrefix - PRE");
+
+            if(MatchManager.Instance.justCasted && MatchManager.Instance!=null)
+            {
+                LogDebug("fOnMouseUpPrefix - POST");
+                Character _character = MatchManager.Instance.GetHeroHeroActive();
+
+                if (_character.GetAuraCharges("stealth") <= 0)
+                {
+                    LogDebug($"Trait: {trait4a} Gaining Stealth - {_character.GetAuraCharges("stealth")}");
+                    _character.SetAuraTrait(_character, "stealth", 1);
+                    _character.HeroItem.ScrollCombatText(Texts.Instance.GetText("traits_" + trait4a), Enums.CombatScrollEffectType.Trait);
+                }
+
+                LogDebug("fOnMouseUpPrefix - POST Stealth");
+
+            }
+        }
+
         [HarmonyPostfix]
         [HarmonyPatch(typeof(MatchManager), nameof(MatchManager.JustCastedCo))]
-        static IEnumerator JustCastedCoWrapper(IEnumerator result)
+        public static IEnumerator JustCastedCoWrapper(IEnumerator result)
         {
+            LogDebug("JustCastedCoWrapper - PRE");
+
             // Run original enumerator code
             while (result.MoveNext())
+            {   
+                LogDebug("JustCastedCoWrapper - Inside1");         
                 yield return result.Current;
-            
+                LogDebug("JustCastedCoWrapper - Inside2");
+
+            }
             // Run your postfix
 
-            LogDebug("JustCastedCoWrapper");
+            LogDebug("JustCastedCoWrapper - POST");
             Character _character = MatchManager.Instance.GetHeroHeroActive();
 
             if (_character.GetAuraCharges("stealth") <= 0)
@@ -333,6 +362,9 @@ namespace TheMagician
                 _character.SetAuraTrait(_character, "stealth", 1);
                 _character.HeroItem.ScrollCombatText(Texts.Instance.GetText("traits_" + trait4a), Enums.CombatScrollEffectType.Trait);
             }
+
+            LogDebug("JustCastedCoWrapper - POST Stealth");
+
 
         }
     }
