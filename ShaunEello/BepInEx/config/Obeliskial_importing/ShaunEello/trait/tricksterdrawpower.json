@@ -1,9 +1,9 @@
 {
-    "Activation": "None",
-    "AuraCurseBonus1": "",
+    "Activation": "DrawCard",
+    "AuraCurseBonus1": "inspire",
     "AuraCurseBonus2": "",
     "AuraCurseBonus3": "",
-    "AuraCurseBonusValue1": 0,
+    "AuraCurseBonusValue1": 1,
     "AuraCurseBonusValue2": 0,
     "AuraCurseBonusValue3": 0,
     "AuraCurseImmune1": "",
@@ -23,12 +23,12 @@
     "DamageBonusPercentValue": 0.0,
     "DamageBonusPercentValue2": 0.0,
     "DamageBonusPercentValue3": 0.0,
-    "Description": "<Description of what the innate does>",
+    "Description": "+1 Inspire. At the start of your turn, you lose 2 more Powerful. When you draw a card, gain 1 Powerful (unaffected by modifiers). Max Powerful charges +5",
     "HealFlatBonus": 0,
     "HealPercentBonus": 0.0,
     "HealReceivedFlatBonus": 0,
     "HealReceivedPercentBonus": 0.0,
-    "ID": "<ID of the trait. Must match the name of the file and the ID found in <subclassname>.json. Example - characternametrait0name or ulfvitrcalltherain>",
+    "ID": "tricksterdrawpower",
     "ResistModified1": "None",
     "ResistModified2": "None",
     "ResistModified3": "None",
@@ -39,5 +39,5 @@
     "TimesPerTurn": 0,
     "TraitCard": "",
     "TraitCardForAllHeroes": "",
-    "TraitName": "<Name of the trait. Example - Call the Rain"
+    "TraitName": "Draw Power"
 }

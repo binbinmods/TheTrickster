@@ -6,7 +6,7 @@
 	<Product>TheMagician</Product>
     <AssemblyName>com.binbin.thetrickster</AssemblyName>
     <Description>Shaun Eello, The Trickster</Description>
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
@@ -33,16 +33,17 @@
       <HintPath>../../../!libs/BepInEx.dll</HintPath>
     </Reference>
     <Reference Include="com.stiffmeds.obeliskialessentials">
-      <HintPath>../../../!libs/Obeliskial_Essentials.dll</HintPath>
+      <HintPath>../../../!libs/com.stiffmeds.obeliskialessentials.dll</HintPath>
     </Reference>
     <Reference Include="com.stiffmeds.obeliskialcontent">
-      <HintPath>../../../!libs/Obeliskial_Content.dll</HintPath>
+      <HintPath>../../../!libs/com.stiffmeds.obeliskialcontent.dll</HintPath>
     </Reference>
   </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="../../../../plugins" />
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="../../Ready to Ship/Shaun/BepInEx/plugins" />
+    <Exec Command="/usr/bin/python3 &quot;$(ProjectDir)../ship_mod.py&quot;" />
   </Target>
 
 </Project>

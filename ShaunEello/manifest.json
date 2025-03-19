@@ -1,0 +1,9 @@
+{
+    "name": "Shaun_Eello_the_Trickster",
+    "version_number": "1.1.0",
+    "website_url": "https://github.com/binbinmods/TheTrickster",
+    "description": "Hero Mod for Shaun Eello, the Trickster, a Card Draw based Card playing Trickster who can learn to use Magic.",
+    "dependencies": [
+        "meds-Obeliskial_Content-1.3.0"
+    ]
+}
