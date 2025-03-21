@@ -6,7 +6,7 @@
 	<Product>TheMagician</Product>
     <AssemblyName>com.binbin.thetrickster</AssemblyName>
     <Description>Shaun Eello, The Trickster</Description>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
@@ -42,7 +42,7 @@
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="../../../../plugins" />
-    <Copy SourceFiles="$(TargetPath)" DestinationFolder="../../Ready to Ship/Shaun/BepInEx/plugins" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="../ShaunEello/BepInEx/plugins" />
     <Exec Command="/usr/bin/python3 &quot;$(ProjectDir)../ship_mod.py&quot;" />
   </Target>
 
