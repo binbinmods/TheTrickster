@@ -1,3 +1,7 @@
+# 1.1.2
+
+Temporary fix for issue with persistent freezes caused by unsetting the mage subclass
+
 # 1.1.1
 
 Added missing dll

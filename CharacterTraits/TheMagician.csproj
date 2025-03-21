@@ -6,7 +6,7 @@
 	<Product>TheMagician</Product>
     <AssemblyName>com.binbin.thetrickster</AssemblyName>
     <Description>Shaun Eello, The Trickster</Description>
-    <Version>1.1.1</Version>
+    <Version>1.1.2</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>

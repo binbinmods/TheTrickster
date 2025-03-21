@@ -35,7 +35,7 @@ namespace TheMagician
                 _version: PluginInfo.PLUGIN_VERSION,
                 _date: ModDate,
                 _link: @"https://github.com/binbinmods/magician",
-                _contentFolder: characterName,
+                _contentFolder: "ShaunEello",
                 _type: ["content", "hero", "trait"]
             );
             // apply patches

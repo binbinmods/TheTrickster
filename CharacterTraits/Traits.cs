@@ -250,7 +250,8 @@ namespace TheMagician
             UnsetMage(__instance);
         }
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(AtOManager), nameof(HeroSelectionManager.Instantiate))]
+        // [HarmonyPatch(typeof(HeroSelectionManager), nameof(HeroSelectionManager.Instantiate))]
+        [HarmonyPatch(typeof(HeroSelectionManager), "Awake")]
         public static void HeroSelectionManagerInstantiatePostfix(HeroSelectionManager __instance)
         {
             UnsetMage(AtOManager.Instance);
