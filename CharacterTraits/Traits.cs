@@ -90,11 +90,11 @@ namespace TheMagician
                     PlayCardForFree("tricksterspecialdraw");
 
                     MatchManager matchManager = MatchManager.Instance;
-                    if(matchManager!=null)
+                    if (matchManager != null)
                     {
                         LogDebug("Decrement globalVanishCardsNum - draw");
                         int globalVanishCardsNum = Traverse.Create(matchManager).Field("GlobalVanishCardsNum").GetValue<int>();
-                        globalVanishCardsNum -=1;
+                        globalVanishCardsNum -= 1;
                         Traverse.Create(matchManager).Field("GlobalVanishCardsNum").SetValue(globalVanishCardsNum);
                     }
 
@@ -138,18 +138,18 @@ namespace TheMagician
                 string traitName = _trait;
                 LogDebug(traitName);
                 LogDebug($"{traitName} nStealth = {_character.GetAuraCharges("stealth")}");
-                if (_castedCard != null && _character.GetAuraCharges("stealth") <= 0 && _castedCard.Id!="tricksterspecialstealth"&& _castedCard.Id!="tricksterspecialdraw" )
+                if (_castedCard != null && _character.GetAuraCharges("stealth") <= 0 && _castedCard.Id != "tricksterspecialstealth" && _castedCard.Id != "tricksterspecialdraw")
                 {
                     LogDebug($"Trait: {traitName} Gaining Stealth - {_character.GetAuraCharges("stealth")}");
-                    
-                    PlayCardForFree("tricksterspecialstealth");                        
+
+                    PlayCardForFree("tricksterspecialstealth");
 
                     MatchManager matchManager = MatchManager.Instance;
-                    if(matchManager!=null)
+                    if (matchManager != null)
                     {
                         LogDebug("Decrement globalVanishCardsNum - stealth");
                         int globalVanishCardsNum = Traverse.Create(matchManager).Field("GlobalVanishCardsNum").GetValue<int>();
-                        globalVanishCardsNum -=1;
+                        globalVanishCardsNum -= 1;
                         Traverse.Create(matchManager).Field("GlobalVanishCardsNum").SetValue(globalVanishCardsNum);
                     }
                     // _character.SetAuraTrait(_character, "stealth", 1);
@@ -179,7 +179,7 @@ namespace TheMagician
             Hero activeHero = __instance.GetHeroHeroActive();
             if (IsLivingHero(activeHero) && activeHero.HaveTrait(trait4b))
             {
-                LogDebug($"Trait: {trait4a} Gaining Powerful - {activeHero.GetAuraCharges("powerful")}");
+                LogDebug($"Trait: {trait4b} Gaining Powerful - {activeHero.GetAuraCharges("powerful")}");
 
                 activeHero.SetAura(activeHero, GetAuraCurseData("powerful"), 1, fromTrait: true, useCharacterMods: true);
                 activeHero.HeroItem.ScrollCombatText(Texts.Instance.GetText("traits_" + trait4b), Enums.CombatScrollEffectType.Trait);
@@ -219,7 +219,7 @@ namespace TheMagician
 
         public static void UnsetMage(AtOManager __instance)
         {
-            if (__instance==null){return;}
+            if (__instance == null) { return; }
             if (!Globals.Instance.SubClass.ContainsKey("trickster"))
             {
                 return;
@@ -322,59 +322,59 @@ namespace TheMagician
             }
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(CharacterItem), nameof(CharacterItem.fOnMouseUp))]
-        public static void fOnMouseUpPrefix()
-        {
-            LogDebug("fOnMouseUpPrefix - PRE");
+        // [HarmonyPrefix]
+        // [HarmonyPatch(typeof(CharacterItem), nameof(CharacterItem.fOnMouseUp))]
+        // public static void fOnMouseUpPrefix()
+        // {
+        //     LogDebug("fOnMouseUpPrefix - PRE");
 
-            if(MatchManager.Instance.justCasted && MatchManager.Instance!=null)
-            {
-                LogDebug("fOnMouseUpPrefix - POST");
-                Character _character = MatchManager.Instance.GetHeroHeroActive();
+        //     if (MatchManager.Instance.justCasted && MatchManager.Instance != null)
+        //     {
+        //         LogDebug("fOnMouseUpPrefix - POST");
+        //         Character _character = MatchManager.Instance.GetHeroHeroActive();
 
-                if (_character.GetAuraCharges("stealth") <= 0)
-                {
-                    LogDebug($"Trait: {trait4a} Gaining Stealth - {_character.GetAuraCharges("stealth")}");
-                    _character.SetAuraTrait(_character, "stealth", 1);
-                    _character.HeroItem.ScrollCombatText(Texts.Instance.GetText("traits_" + trait4a), Enums.CombatScrollEffectType.Trait);
-                }
+        //         if (_character.GetAuraCharges("stealth") <= 0 && _character.HaveTrait(trait4a))
+        //         {
+        //             LogDebug($"Trait: {trait4a} Gaining Stealth - {_character.GetAuraCharges("stealth")}");
+        //             _character.SetAuraTrait(_character, "stealth", 1);
+        //             _character.HeroItem.ScrollCombatText(Texts.Instance.GetText("traits_" + trait4a), Enums.CombatScrollEffectType.Trait);
+        //         }
 
-                LogDebug("fOnMouseUpPrefix - POST Stealth");
+        //         LogDebug("fOnMouseUpPrefix - POST Stealth");
 
-            }
-        }
+        //     }
+        // }
 
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(MatchManager), nameof(MatchManager.JustCastedCo))]
-        public static IEnumerator JustCastedCoWrapper(IEnumerator result)
-        {
-            LogDebug("JustCastedCoWrapper - PRE");
+        // [HarmonyPostfix]
+        // [HarmonyPatch(typeof(MatchManager), nameof(MatchManager.JustCastedCo))]
+        // public static IEnumerator JustCastedCoWrapper(IEnumerator result)
+        // {
+        //     LogDebug("JustCastedCoWrapper - PRE");
 
-            // Run original enumerator code
-            while (result.MoveNext())
-            {   
-                LogDebug("JustCastedCoWrapper - Inside1");         
-                yield return result.Current;
-                LogDebug("JustCastedCoWrapper - Inside2");
+        //     // Run original enumerator code
+        //     while (result.MoveNext())
+        //     {
+        //         LogDebug("JustCastedCoWrapper - Inside1");
+        //         yield return result.Current;
+        //         LogDebug("JustCastedCoWrapper - Inside2");
 
-            }
-            // Run your postfix
+        //     }
+        //     // Run your postfix
 
-            LogDebug("JustCastedCoWrapper - POST");
-            Character _character = MatchManager.Instance.GetHeroHeroActive();
+        //     LogDebug("JustCastedCoWrapper - POST");
+        //     Character _character = MatchManager.Instance.GetHeroHeroActive();
 
-            if (_character.GetAuraCharges("stealth") <= 0)
-            {
-                LogDebug($"Trait: {trait4a} Gaining Stealth - {_character.GetAuraCharges("stealth")}");
-                _character.SetAuraTrait(_character, "stealth", 1);
-                _character.HeroItem.ScrollCombatText(Texts.Instance.GetText("traits_" + trait4a), Enums.CombatScrollEffectType.Trait);
-            }
+        //     if (_character.GetAuraCharges("stealth") <= 0 && _character.HaveTrait(trait4a))
+        //     {
+        //         LogDebug($"Trait: {trait4a} Gaining Stealth - {_character.GetAuraCharges("stealth")}");
+        //         _character.SetAuraTrait(_character, "stealth", 1);
+        //         _character.HeroItem.ScrollCombatText(Texts.Instance.GetText("traits_" + trait4a), Enums.CombatScrollEffectType.Trait);
+        //     }
 
-            LogDebug("JustCastedCoWrapper - POST Stealth");
+        //     LogDebug("JustCastedCoWrapper - POST Stealth");
 
 
-        }
+        // }
     }
 }
 

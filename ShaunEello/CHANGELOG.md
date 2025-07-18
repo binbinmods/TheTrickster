@@ -1,3 +1,11 @@
+# 1.2.0
+
+Potential fix for Distracting Act.
+
+Updated White Practise
+
+Increased Rarity of Throwing Card upgrades
+
 # 1.1.2
 
 Temporary fix for issue with persistent freezes caused by unsetting the mage subclass
