@@ -1,5 +1,7 @@
 # 1.2.0
 
+Update for AtO v1.7.2
+
 Potential fix for Distracting Act.
 
 Updated White Practise
